@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kubeshop/testkube-operator/refs/heads/main/config/crd/bases/testworkflows.testkube.io_testworkflowtemplates.yaml
+
+kind: TestWorkflowTemplate
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: template
+  namespace: testkube
+  labels:
+    project: dejan
+spec:
+  config:
+    expected_failure:
+      description: Whether the test suite is expected to fail
+      type: boolean
+      default: 'false'
+    manage_vcluster:
+      description: Whether to manage the vCluster
+      type: boolean
+      default: 'true'
+    ondemand:
+      description: Whether the test suite execution was triggered by the on-demand system
+      type: boolean
+    suite:
+      description: The test suite to run
+      type: string
+      default: 'fast_pass'
+    target_env:
+      description: The target environment to test
+      type: string
+      default: 'local'
+    target_env_label:
+      description: The target environment label
+      type: string
+      default: 'latest'
+    target_revision:
+      description: The target revision to test
+      type: string
+      default: 'HEAD'
+    vcluster_name:
+      description: The name of the vcluster to run the test suite
+      type: string
+      default: ''
+  execution:
+    tags:
+      ondemand: '{{ config.ondemand }}'
+      suite: '{{ config.suite }}'
+      target_env: '{{ config.target_env_label }}'
+      target_revision: '{{ config.target_revision }}'
+      vcluster_name: '{{ config.vcluster_name }}'
+  pod:
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000

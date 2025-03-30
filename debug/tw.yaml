@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kubeshop/testkube-operator/refs/heads/main/config/crd/bases/testworkflows.testkube.io_testworkflows.yamlapiVersion: testworkflows.testkube.io/v1
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: api-orders
+  namespace: testkube
+  labels:
+    app: dejan
+spec:
+  # Expose configuration for CLI
+  config:
+    ondemand: { type: boolean }
+    suite: { type: string, default: 'api_orders' }
+    target_env: { type: string, default: 'local' }
+    target_env_label: { type: string, default: 'l' }
+    target_revision: { type: string, default: 'HEAD' }
+    vcluster_name: { type: string }
+  use:
+    - name: template
+      # Pass that configuration to the expected template
+      config:
+        ondemand: '{{ config.ondemand }}'
+        suite: '{{ config.suite }}'
+        target_env: '{{ config.target_env }}'
+        target_env_label: '{{ config.target_env_label }}'
+        target_revision: '{{ config.target_revision }}'
+        vcluster_name: '{{ config.vcluster_name }}'
+  steps:
+    - name: Run Test Suites
+      run:
+        shell: echo "Hello world"
